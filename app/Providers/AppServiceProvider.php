@@ -11,7 +11,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(
+            \App\Contracts\Services\AuthenticationServiceInterface::class,
+            fn() => new \App\Services\AuthenticationService
+        );
     }
 
     /**
