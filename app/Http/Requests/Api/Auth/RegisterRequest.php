@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests\Api\Auth;
 
-use App\Enums\AuthTypeEnum;
-use App\Http\Requests\Api\BaseRequest;
-use App\Rules\AuthEmail;
+use App\Enums\LoginTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -26,20 +24,30 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'login_type'        => ['required', 'integer', Rule::in(LoginTypeEnum::getTypes())],
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'phone' => 'sometimes|string',
-            'age' => 'required|numeric',
+            'phone' => 'required|string',
+            'date_of_birth' => 'required|date',
             'gender' => 'required|numeric',
-            'email' => [
-                'required',
-                'string',
+            'email'             => [
+                'required_if:login_type,' . LoginTypeEnum::NORMAL,
                 'email',
                 'max:255',
-                'unique:users,email'
+                Rule::unique('users')
+                    ->whereNull('deleted_at')
+                    ->where('email', $this->email)
             ],
-            'password' => 'required|string',
-            'confirm_password' => 'required|string|same:password',
+            'password'          => [
+                'required_if:login_type,' . LoginTypeEnum::NORMAL,
+                'min:8',
+                'regex:/^[a-zA-Z 0-9\_\/\(\)\=\+\~\-\`\@\$\!\#\&]*$/'
+            ],
+            'confirm_password' => [
+                'required_if:login_type,' . LoginTypeEnum::NORMAL,
+                'string',
+                'same:password'
+            ],
         ];
     }
 }

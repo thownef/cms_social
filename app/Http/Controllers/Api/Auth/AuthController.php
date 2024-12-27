@@ -6,17 +6,19 @@ use App\Facades\AuthService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
-use App\Http\Resources\Auth\AuthResource;
+use App\Supports\Traits\HasTransformer;
+use App\Transformers\UserTransformer;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request): JsonResource
+    use HasTransformer;
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $account = AuthService::register($request->validated());
-
-        return new AuthResource($account);
+        $validated = $request->validated();
+        $data = collect($validated)->only(['login_type', 'first_name', 'last_name', 'email', 'password', 'phone'])->toArray();
+        $account = AuthService::register($data);
+        return $this->httpOK($account, UserTransformer::class);
     }
 
     public function login(LoginRequest $request): JsonResponse
@@ -24,8 +26,12 @@ class AuthController extends Controller
         return AuthService::login($request->validated());
     }
 
-    public function logout()
+    public function logout(): JsonResponse
     {
         return AuthService::logout();
+    }
+    public function me(): JsonResponse
+    {
+        return AuthService::me();
     }
 }

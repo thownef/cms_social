@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
+use App\Models\WorkHistory;
 
-class UserRepository extends EloquentRepository implements \App\Contracts\Repositories\UserRepositoryInterface
+class WorkHistoryRepository extends EloquentRepository implements \App\Contracts\Repositories\WorkHistoryRepositoryInterface
 {
     protected array $allowedFilters = [];
 
@@ -17,6 +17,6 @@ class UserRepository extends EloquentRepository implements \App\Contracts\Reposi
 
     public function model(): string
     {
-        return User::class;
+        return WorkHistory::class;
     }
 }

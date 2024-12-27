@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
             \App\Contracts\Services\AuthenticationServiceInterface::class,
             fn() => new \App\Services\AuthenticationService
         );
+        
     }
 
     /**

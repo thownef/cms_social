@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
+use App\Models\Profile;
 
-class UserRepository extends EloquentRepository implements \App\Contracts\Repositories\UserRepositoryInterface
+class ProfileRepository extends EloquentRepository implements \App\Contracts\Repositories\ProfileRepositoryInterface
 {
     protected array $allowedFilters = [];
 
@@ -17,6 +17,6 @@ class UserRepository extends EloquentRepository implements \App\Contracts\Reposi
 
     public function model(): string
     {
-        return User::class;
+        return Profile::class;
     }
 }

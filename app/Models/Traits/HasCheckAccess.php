@@ -2,7 +2,6 @@
 
 namespace App\Models\Traits;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Hash;
 
 trait HasCheckAccess

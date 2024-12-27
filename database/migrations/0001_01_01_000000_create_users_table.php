@@ -16,22 +16,23 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->string('phone')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->string('login_type')->comment('1: normal | 2: facebook | 3: google | 4: github');
+            $table->softDeletes();
             $table->timestamps();
         });
 
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->boolean('is_active');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->tinyInteger('gender')->comment("1: female | 2: male");
-            $table->timestamp('date_of_birth');
-            $table->string('education');
-            $table->text('location');
-            $table->string('favorites');
-            $table->text('about');
+            $table->timestamp('date_of_birth')->nullable();
+            $table->text('location')->nullable();
+            $table->text('biography')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
 

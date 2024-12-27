@@ -3,55 +3,113 @@
 namespace App\Repositories;
 
 use App\Contracts\Repositories\EloquentRepositoryInterface;
-use App\Repositories\Traits\HasQueryBuilder;
+use App\Repositories\Traits\HasPerPageRequest;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\QueryBuilder;
 
-abstract class EloquentRepository implements EloquentRepositoryInterface
+abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepository implements EloquentRepositoryInterface
 {
-    use HasQueryBuilder;
+    use HasPerPageRequest;
 
-    public $_model;
+    protected string $defaultSort = '-created_at';
 
-    public function __construct()
+    protected array $allowedFilters = [];
+
+    protected array $allowedSorts = [];
+
+    protected array $allowedIncludes = [];
+
+    protected array $allowedFields = ['*'];
+
+    /**
+     * Retrieve all data of repository
+     *
+     * @param array $columns
+     *
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     *
+     * @return mixed
+     */
+    public function all($columns = ['*'])
     {
-        $this->setModel();
+        $this->applyCriteria();
+        $this->applyScope();
+        $results = $this->model->get($columns);
+
+        $this->resetModel();
+        $this->resetScope();
+
+        return $this->parserResult($results);
     }
 
-    private function setModel()
+    /**
+     * @param $limit
+     * @param array $columns
+     * @param string $method
+     *
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     *
+     * @return LengthAwarePaginator|Collection|mixed
+     */
+    public function paginateOrAll($limit = null, array $columns = ['*'], string $method = 'paginate')
     {
-        $this->_model = app()->make($this->getModel());
+        if ($columns === null) {
+            $columns = ['*'];
+        }
+        if (! empty($limit)) {
+            return $this->paginate($limit, $columns, $method);
+        }
+
+        return $this->all($columns);
     }
 
-    abstract public function getModel(): string;
-
-    public function makeListBuilder()
+    public function addFilters($filter)
     {
-        return $this->makeQueryBuilder();
+        $this->allowedFilters = array_merge($this->allowedFilters, $filter);
     }
 
-    public function getAll($builder = null, $perPage = null)
+    public function addSorts($sorts)
     {
-        $builder = (is_null($builder) ? $this->makeListBuilder() : $builder)
-            ->defaultSort(...[$this->getDefaultSort()])
-            ->allowedFields($this->getFields())
-            ->allowedIncludes($this->getIncludes())
-            ->allowedFilters($this->getFilters())
-            ->allowedSorts($this->getSorts());
+        $this->allowedSorts = array_merge($this->allowedSorts, $sorts);
+    }
+    
+    /**
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     *
+     * @return $this
+     */
+    public function queryBuilder(): self
+    {
+        $model = $this->makeModel();
+        $this->model = QueryBuilder::for($model)
+            ->select(['*'])
+            ->allowedFilters($this->allowedFilters)
+            ->allowedFields($this->allowedFields)
+            ->allowedIncludes($this->allowedIncludes)
+            ->allowedSorts($this->allowedSorts);
 
-        return is_null($perPage) ? $builder->get() : $builder->paginate($perPage);
+        if (! empty($this->defaultSort)) {
+            $this->model->defaultSort($this->defaultSort);
+        }
+
+        return $this;
     }
 
-    public function store(array $data)
+    /**
+     * @param array $with
+     *
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     *
+     * @return Collection
+     */
+    public function exportQuery(array $with = []): Collection
     {
-        return $this->_model->create($data)->fresh();
-    }
-
-    public function update($model, array $data)
-    {
-        return $model->update($data);
-    }
-
-    public function delete($model)
-    {
-        return $model->delete();
+        return $this->queryBuilder()
+            ->with($with)
+            ->when(! empty(request('per_page')), function ($query) {
+                return $query->take($this->getPerPage())
+                    ->offset($this->getOffset());
+            })->get();
     }
 }

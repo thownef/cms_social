@@ -3,12 +3,17 @@
 namespace App\Services;
 
 use App\Contracts\Services\AuthenticationServiceInterface;
+use App\Supports\Traits\HasTransformer;
+use App\Transformers\TokenTransformer;
+use App\Transformers\UserTransformer;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
+    use HasTransformer;
+
     public function __construct()
     {
         $this->setModel();
@@ -20,7 +25,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         $this->_model = app()->make(\App\Models\User::class);
     }
 
-    public function attempt($credentials): array
+    public function attempt($credentials): JsonResponse
     {
         $account = $this->_model->where('email', '=', data_get($credentials, 'email', ''))->first();
 
@@ -46,23 +51,24 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function login($credentials): JsonResponse
     {
-        $token = $this->attempt($credentials);
-        return response()->json($token);
+        return $this->attempt($credentials);
+    }
+
+    private function makeToken($account): JsonResponse
+    {
+        $token = $account->createToken($account);
+        return $this->httpOK($token, TokenTransformer::class);
     }
 
     public function logout(): JsonResponse
     {
         auth()->user()->tokens()->delete();
 
-        return response()->json(['message' => __('message.logout_success')]);
+        return $this->httpOK(['message' => __('message.logout_success')]);
     }
 
-    private function makeToken($account): array
+    public function me(): JsonResponse
     {
-        return [
-            'token_type' => 'Bearer',
-            'access_token' => $account->createToken($account)->plainTextToken,
-            'expired_at' => now()->addMinutes(config('sanctum.expiration') ?? 0)->format('Y-m-d H:i:s'),
-        ];
+        return $this->httpOK(auth()->user(), UserTransformer::class);
     }
 }

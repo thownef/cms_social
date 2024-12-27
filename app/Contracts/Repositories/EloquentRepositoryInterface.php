@@ -2,17 +2,30 @@
 
 namespace App\Contracts\Repositories;
 
-interface EloquentRepositoryInterface
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Prettus\Repository\Contracts\RepositoryInterface;
+
+interface EloquentRepositoryInterface extends RepositoryInterface
 {
-    public function makeQueryBuilder();
+    /**
+     * @param mixed $limit
+     * @param array $columns
+     * @param string $method
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     *
+     * @return LengthAwarePaginator|Collection|mixed
+     */
+    public function paginateOrAll($limit = null, array $columns = ['*'], string $method = 'paginate');
 
-    public function getAll($builder, $perPage = null);
+    /**
+     * @return self
+     */
+    public function queryBuilder(): self;
 
-    public function store(array $data);
-
-    public function update($model, array $data);
-
-    public function delete($model);
-
-    // public function upload($model, $file);
+    /**
+     * @param array $with
+     * @return Collection
+     */
+    public function exportQuery(array $with = []): Collection;
 }
