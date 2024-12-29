@@ -23,31 +23,58 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        switch ($this->login_type) {
+            case LoginTypeEnum::NORMAL:
+                return $this->getNormalLoginRules();
+            case LoginTypeEnum::GOOGLE:
+                return $this->getGoogleLoginRules();
+            case LoginTypeEnum::FACEBOOK:
+                return $this->getFacebookLoginRules();
+            default:
+                return [];
+        }
+    }
+
+    private function getNormalLoginRules(): array
+    {
         return [
-            'login_type'        => ['required', 'integer', Rule::in(LoginTypeEnum::getTypes())],
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'phone' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'gender' => 'required|numeric',
-            'email'             => [
-                'required_if:login_type,' . LoginTypeEnum::NORMAL,
+            'login_type' => ['required', 'integer', Rule::in(LoginTypeEnum::getTypes())],
+            'first_name' => ['required', 'string'],
+            'last_name' => ['required', 'string'],
+            'phone' => ['required', 'string', Rule::unique('users')->whereNull('deleted_at')->where('phone', $this->phone)],
+            'date_of_birth' => ['required', 'date'],
+            'gender' => ['required', 'numeric'],
+            'email' => [
+                'required',
                 'email',
                 'max:255',
                 Rule::unique('users')
                     ->whereNull('deleted_at')
                     ->where('email', $this->email)
             ],
-            'password'          => [
-                'required_if:login_type,' . LoginTypeEnum::NORMAL,
+            'password' => [
+                'required',
                 'min:8',
                 'regex:/^[a-zA-Z 0-9\_\/\(\)\=\+\~\-\`\@\$\!\#\&]*$/'
             ],
             'confirm_password' => [
-                'required_if:login_type,' . LoginTypeEnum::NORMAL,
-                'string',
+                'required',
                 'same:password'
             ],
+        ];
+    }
+
+    private function getGoogleLoginRules(): array
+    {
+        return [
+            'login_type' => ['required', 'integer', Rule::in(LoginTypeEnum::getTypes())],
+        ];
+    }
+
+    private function getFacebookLoginRules(): array
+    {
+        return [
+            'login_type' => ['required', 'integer', Rule::in(LoginTypeEnum::getTypes())],
         ];
     }
 }
