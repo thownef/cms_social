@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Actions\Profile\ShowAction;
+use App\Actions\Profile\UpdateAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Profile\UpdateRequest;
 use App\Models\Profile;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ProfileController extends Controller
 {
@@ -21,14 +22,15 @@ class ProfileController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param UpdateRequest $request
      * @param Profile $profile
      * @param UpdateAction $action
      * @return JsonResponse
      */
-    public function update(Request $request, Profile $profile)
+    public function update(UpdateRequest $request, UpdateAction $action)
     {
-        //
+        $profile = auth()->user()->profile;
+        return $action($profile->id, $request->validated());
     }
 
 }

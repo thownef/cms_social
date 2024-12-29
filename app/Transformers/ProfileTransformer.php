@@ -33,6 +33,8 @@ class ProfileTransformer extends Transformer
     {
         return [
             'id' => $profile->id,
+            'first_name' => $profile->first_name,
+            'last_name' => $profile->last_name,
             'gender' => $profile->gender,
             'date_of_birth' => $profile->date_of_birth,
             'location' => $profile->location,

@@ -32,8 +32,6 @@ class UserTransformer extends Transformer
     {
         return [
             'id' => $user->id,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
             'email' => $user->email,
             'phone' => $user->phone,
             'created_at' => Carbon::parse($user->created_at)->format('Y/m/d H:i:s'),
