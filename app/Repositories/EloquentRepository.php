@@ -112,4 +112,25 @@ abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepos
                     ->offset($this->getOffset());
             })->get();
     }
+
+    /**
+     * Get data for authenticated user
+     *
+     * @param array $columns
+     * @return mixed
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     */
+    public function forCurrentUser(array $columns = ['*'])
+    {
+        $this->applyCriteria();
+        $this->applyScope();
+        
+        $userId = auth()->id();
+        $results = $this->model->where('user_id', $userId)->get($columns);
+
+        $this->resetModel();
+        $this->resetScope();
+
+        return $this->parserResult($results);
+    }
 }

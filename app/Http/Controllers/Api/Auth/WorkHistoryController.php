@@ -2,51 +2,45 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Actions\WorkHistory\StoreAction;
+use App\Actions\WorkHistory\{IndexAction, ShowAction, StoreAction, UpdateAction, DestroyAction};
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\WorkHistory\StoreRequest;
+use App\Http\Requests\Api\WorkHistory\{IndexRequest, StoreRequest, UpdateRequest};
 use App\Models\WorkHistory;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class WorkHistoryController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Summary of index
+     * @param \App\Actions\WorkHistory\IndexAction $action
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(IndexAction $action): JsonResponse 
     {
-        //
+        return $action();
     }
 
-    /**
-     * Store a newly created resource in storage.
+    /** 
+     * 
      */
-    public function store(StoreRequest $request, StoreAction $action)
+
+    public function store(StoreRequest $request, StoreAction $action): JsonResponse
     {
         return $action($request->validated());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(WorkHistory $workHistory)
-    {
-        //
-    }
+    // public function show(WorkHistory $workHistory, ShowAction $action): JsonResponse
+    // {
+    //     return $action($workHistory->id);
+    // }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, WorkHistory $workHistory)
-    {
-        //
-    }
+    // public function update(UpdateRequest $request, WorkHistory $workHistory, UpdateAction $action): JsonResponse
+    // {
+    //     return $action($workHistory->id, $request->validated());
+    // }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(WorkHistory $workHistory)
-    {
-        //
-    }
+    // public function destroy(WorkHistory $workHistory, DestroyAction $action): JsonResponse
+    // {
+    //     return $action($workHistory->id);
+    // }
 }

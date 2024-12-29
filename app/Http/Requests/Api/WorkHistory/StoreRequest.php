@@ -11,7 +11,7 @@ class StoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,11 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'job_title' => 'required|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'date_started' => 'required|date',
+            'date_ended' => 'nullable|date|after:date_started',
+            'is_public' => 'boolean'
         ];
     }
 }

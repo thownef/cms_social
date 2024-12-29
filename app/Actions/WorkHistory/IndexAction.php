@@ -18,13 +18,13 @@ class IndexAction extends BaseAction
      *
      * @return JsonResponse
      */
-    public function __invoke(array $data): JsonResponse
+    public function __invoke(): JsonResponse
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () {
             /**
              * @var WorkHistory $workHistory
              */
-            $workHistory = $this->workHistoryRepository->create($data);
+            $workHistory = $this->workHistoryRepository->forCurrentUser();
 
             return $this->httpOK($workHistory, WorkHistoryTransformer::class);
         });

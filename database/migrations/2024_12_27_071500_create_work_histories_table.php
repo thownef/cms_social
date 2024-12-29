@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('work_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('profile_id')->constrained('profiles')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('job_title', 255);
             $table->string('company_name', 255);
+            $table->string('location')->nullable();
             $table->date('date_started');
             $table->date('date_ended')->nullable();
-            $table->boolean('is_public')->default(false);
+            $table->boolean('is_current')->default(false);
+            $table->boolean('is_public')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -32,10 +32,12 @@ class WorkHistoryTransformer extends Transformer
     {
         return [
             'id' => $workHistory->id,
+            'user_id' => $workHistory->user_id,
             'company_name' => $workHistory->company_name,
-            'position' => $workHistory->position,
+            'location' => $workHistory->location,
             'date_started' => $workHistory->date_started,
             'date_ended' => $workHistory->date_ended,
+            'is_current' => $workHistory->is_current,
             'created_at' => Carbon::parse($workHistory->created_at)->format('Y/m/d H:i:s'),
             'updated_at' => Carbon::parse($workHistory->updated_at)->format('Y/m/d H:i:s'),
         ];

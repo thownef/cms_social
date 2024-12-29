@@ -17,5 +17,5 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
     Route::put('profiles', [\App\Http\Controllers\Api\Auth\ProfileController::class, 'update'])->name('profiles.update');
-    Route::apiResource('work-history', \App\Http\Controllers\Api\Auth\WorkHistoryController::class)->only(['update']);
+    Route::apiResource('work-history', \App\Http\Controllers\Api\Auth\WorkHistoryController::class);
 });
