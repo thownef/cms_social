@@ -9,7 +9,7 @@ use App\Transformers\WorkHistoryTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
-class IndexAction extends BaseAction
+class DestroyAction extends BaseAction
 {
     use HasPerPageRequest;
 
@@ -18,15 +18,14 @@ class IndexAction extends BaseAction
      *
      * @return JsonResponse
      */
-    public function __invoke(): JsonResponse
+    public function __invoke(int $id): JsonResponse
     {
-        return DB::transaction(function () {
+        return DB::transaction(function () use ($id) {
             /**
              * @var WorkHistory $workHistory
              */
-            $workHistory = $this->workHistoryRepository->forCurrentUser();
-
-            return $this->httpOK($workHistory, WorkHistoryTransformer::class);
+            $this->workHistoryRepository->delete($id);
+            return $this->httpNoContent();
         });
     }
 }

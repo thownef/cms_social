@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use App\Models\Traits\HasUserContext;
+use App\Models\Traits\HasProfileContext;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WorkHistory extends Model
 {
-    use HasFactory, HasUserContext;
+    use HasFactory, HasProfileContext;
 
     protected $table = 'work_histories';
     protected $fillable = [
-        'user_id', 
+        'profile_id', 
         'job_title', 
         'company_name', 
         'location',
@@ -30,8 +30,8 @@ class WorkHistory extends Model
         'is_public' => 'boolean',
     ];
 
-    public function user(): BelongsTo
+    public function profile(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Profile::class);
     }
 }

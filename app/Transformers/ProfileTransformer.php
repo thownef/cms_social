@@ -14,7 +14,7 @@ class ProfileTransformer extends Transformer
      *
      * @var string[]
      */
-    protected $relations = ['user', 'workHistories'];
+    protected $relations = ['user', 'workHistory'];
 
     /**
      * List of autoloaded default relations.
@@ -49,8 +49,8 @@ class ProfileTransformer extends Transformer
         return $this->item($user->profile, new ProfileTransformer);
     }
 
-    public function includeWorkHistories(Profile $profile)
+    public function includeWorkHistory(Profile $profile)
     {
-        return $this->collection($profile->workHistories, new WorkHistoryTransformer);
+        return $this->collection($profile->workHistory, new WorkHistoryTransformer);
     }
 }

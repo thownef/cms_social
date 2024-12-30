@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\WorkHistory;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,9 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'job_title' => 'required|string|max:255',
-            'company_name' => 'required|string|max:255',
-            'date_started' => 'required|date',
+            'job_title' => 'sometimes|string|max:255',
+            'company_name' => 'sometimes|string|max:255',
+            'date_started' => 'sometimes|date',
             'date_ended' => 'sometimes|nullable|date|after:date_started',
             'is_public' => 'sometimes|boolean',
             'is_current' => 'sometimes|boolean'

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('work_histories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('profile_id')->constrained('profiles')->cascadeOnDelete();
             $table->string('job_title', 255);
             $table->string('company_name', 255);
             $table->string('location')->nullable();

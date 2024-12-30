@@ -32,7 +32,7 @@ class Profile extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function workHistories(): HasMany
+    public function workHistory(): HasMany
     {
         return $this->hasMany(WorkHistory::class);
     }
