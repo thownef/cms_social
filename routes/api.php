@@ -20,4 +20,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('profiles', [\App\Http\Controllers\Api\ProfileController::class, 'update'])->name('profiles.update');
     Route::apiResource('work-history', \App\Http\Controllers\Api\WorkHistoryController::class);
     Route::apiResource('posts', \App\Http\Controllers\Api\PostController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::apiResource('uploads', \App\Http\Controllers\Api\UploadController::class)->only(['index']);
+    Route::get('uploads/group-type', [\App\Http\Controllers\Api\UploadController::class, 'groupType'])->name('uploads.group-type');
 });

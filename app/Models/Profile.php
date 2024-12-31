@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Profile extends Model
 {
     use HasFactory;
-
     protected $table = 'profiles';
 
     protected $fillable = [
@@ -35,5 +35,11 @@ class Profile extends Model
     public function workHistory(): HasMany
     {
         return $this->hasMany(WorkHistory::class);
+    }
+
+    public function avatar(): MorphOne
+    {
+        return $this->morphOne(Upload::class, 'uploadable')
+            ->where('type', 'avatar');
     }
 }

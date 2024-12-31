@@ -16,6 +16,7 @@ return new class extends Migration
             $table->morphs('uploadable');
             $table->string('name');
             $table->string('link')->nullable();
+            $table->string('type')->default('post');
             $table->timestamps();
         });
     }

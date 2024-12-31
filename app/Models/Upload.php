@@ -15,8 +15,13 @@ class Upload extends Model
 
     protected $table = 'uploads';
 
-    protected $fillable = ['uploadable_id', 'uploadable_type', 'name', 'link'];
-    
+    protected $fillable = [
+        'uploadable_id',
+        'uploadable_type',
+        'name',
+        'link',
+    ];
+
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -25,5 +30,12 @@ class Upload extends Model
     public function uploadable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function scopeCollection($query)
+    {
+        return $query->whereHasMorph('uploadable', '*', function ($query) {
+            $query->where('user_id', auth()->id());
+        });
     }
 }
