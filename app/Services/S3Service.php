@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class S3Service implements S3ServiceInterface
 {
-    const SEPARATOR = DIRECTORY_SEPARATOR;
+    const SEPARATOR = '/';
 
     private $driver;
 
@@ -22,7 +22,8 @@ class S3Service implements S3ServiceInterface
 
     public function getDriver()
     {
-        return Storage::disk('local');
+        // TODO: change to s3 when deploy
+        return Storage::disk('public');
     }
 
     public function setPath(string $path = '')
@@ -39,11 +40,12 @@ class S3Service implements S3ServiceInterface
     {
         $filePath = $this->makeFilePath(fileName: $fileName, folderName: $folder);
 
-        if (config('app.env') === 'local') {
+        // TODO: change to s3 when deploy
+        // if (config('app.env') === 's3') {
             $this->driver->put($filePath, $contents);
-        }
+        // }
 
-        return $this->path.self::SEPARATOR.$filePath;
+        return str_replace('\\', '/', $this->path.self::SEPARATOR.$filePath);
     }
 
     public function deleteFile(string $path = '')
@@ -64,6 +66,8 @@ class S3Service implements S3ServiceInterface
             return $rootFolder.$fileName;
         }
 
+        $folderName = str_replace('\\', '/', $folderName);
+        
         return $rootFolder.$folderName.self::SEPARATOR.$fileName;
     }
 }

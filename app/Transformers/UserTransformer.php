@@ -39,8 +39,8 @@ class UserTransformer extends Transformer
         ];
     }
 
-    // public function includeProfile(User $user)
-    // {
-    //     return $this->item($user->profile, new ProfileTransformer);
-    // }
+    public function includeProfile(User $user)
+    {
+        return $this->item($user->profile, new ProfileTransformer);
+    }
 }

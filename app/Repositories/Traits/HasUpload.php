@@ -39,4 +39,20 @@ trait HasUpload
             $model->uploadable()->create(['name' => $fileName, 'link' => $link]);
         }
     }
+
+    public function deleteUpload($model): void
+    {
+        if ($model->uploadable()->exists()) {
+            $model->uploadable->delete();
+        }
+    }
+
+    public function deleteUploadMultiple($model): void
+    {
+        if ($model->uploadable()->exists()) {
+            $model->uploadable->each(function ($upload) {
+                $upload->delete();
+            });
+        }
+    }
 }

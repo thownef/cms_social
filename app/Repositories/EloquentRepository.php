@@ -2,13 +2,13 @@
 
 namespace App\Repositories;
 
-use App\Contracts\Repositories\EloquentRepositoryInterface;
 use App\Repositories\Traits\HasPerPageRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
+use Prettus\Repository\Exceptions\RepositoryException;
 use Spatie\QueryBuilder\QueryBuilder;
 
-abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepository implements EloquentRepositoryInterface
+abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepository implements \App\Contracts\Repositories\EloquentRepositoryInterface
 {
     use HasPerPageRequest;
 
@@ -27,7 +27,7 @@ abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepos
      *
      * @param array $columns
      *
-     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     * @throws RepositoryException
      *
      * @return mixed
      */
@@ -48,7 +48,7 @@ abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepos
      * @param array $columns
      * @param string $method
      *
-     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     * @throws RepositoryException
      *
      * @return LengthAwarePaginator|Collection|mixed
      */
@@ -73,15 +73,16 @@ abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepos
     {
         $this->allowedSorts = array_merge($this->allowedSorts, $sorts);
     }
-    
+
     /**
-     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     * @throws RepositoryException
      *
      * @return $this
      */
     public function queryBuilder(): self
     {
-        $model = $this->makeModel();
+        $model = $this->makeModel()->query();
+
         $this->model = QueryBuilder::for($model)
             ->select(['*'])
             ->allowedFilters($this->allowedFilters)
@@ -89,7 +90,7 @@ abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepos
             ->allowedIncludes($this->allowedIncludes)
             ->allowedSorts($this->allowedSorts);
 
-        if (! empty($this->defaultSort)) {
+        if (!empty($this->defaultSort)) {
             $this->model->defaultSort($this->defaultSort);
         }
 
@@ -99,7 +100,7 @@ abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepos
     /**
      * @param array $with
      *
-     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     * @throws RepositoryException
      *
      * @return Collection
      */
