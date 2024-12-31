@@ -31,4 +31,9 @@ return [
         ],
     ],
 
+    's3' => [
+        'path' => env('AWS_PATH'),
+        'folder_path' => env('AWS_FOLDER_PATH'),
+    ],
+
 ];

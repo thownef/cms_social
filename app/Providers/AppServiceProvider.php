@@ -15,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Contracts\Services\AuthenticationServiceInterface::class,
             fn() => new \App\Services\AuthenticationService
         );
-        
+        $this->app->singleton(
+            \App\Contracts\Services\S3ServiceInterface::class,
+            fn () => new \App\Services\S3Service
+        );
     }
 
     /**

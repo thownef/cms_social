@@ -22,7 +22,7 @@ class S3Service implements S3ServiceInterface
 
     public function getDriver()
     {
-        return Storage::disk('s3');
+        return Storage::disk('local');
     }
 
     public function setPath(string $path = '')
@@ -39,7 +39,7 @@ class S3Service implements S3ServiceInterface
     {
         $filePath = $this->makeFilePath(fileName: $fileName, folderName: $folder);
 
-        if (config('app.env') === 'product') {
+        if (config('app.env') === 'local') {
             $this->driver->put($filePath, $contents);
         }
 
