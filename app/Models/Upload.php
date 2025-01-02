@@ -20,6 +20,7 @@ class Upload extends Model
         'uploadable_type',
         'name',
         'link',
+        'type',
     ];
 
     protected $casts = [

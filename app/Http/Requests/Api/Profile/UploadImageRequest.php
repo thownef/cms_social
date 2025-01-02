@@ -23,8 +23,9 @@ class UploadImageRequest extends FormRequest
     {
         return [
             'content' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240',
             'type' => 'required|string|in:avatar,cover',
+            'is_public' => 'sometimes|boolean',
         ];
     }
 }

@@ -12,6 +12,8 @@ class UploadObserver
      */
     public function deleted(Upload $upload): void
     {
-        S3Service::deleteFile($upload->link);
+        if ($upload->type === 'post') {
+            S3Service::deleteFile($upload->link);
+        }
     }
 }

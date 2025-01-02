@@ -17,9 +17,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('logout', 'logout')->name('.logout');
         });
     });
+    // Profile
     Route::put('profiles', [\App\Http\Controllers\Api\ProfileController::class, 'update'])->name('profiles.update');
+    Route::post('profiles/upload-image', [\App\Http\Controllers\Api\ProfileController::class, 'uploadImage'])->name('profiles.upload-image');
+    // Work History
     Route::apiResource('work-history', \App\Http\Controllers\Api\WorkHistoryController::class);
+    // Post
     Route::apiResource('posts', \App\Http\Controllers\Api\PostController::class)->only(['index', 'store', 'update', 'destroy']);
+    // Upload
     Route::apiResource('uploads', \App\Http\Controllers\Api\UploadController::class)->only(['index']);
     Route::get('uploads/group-type', [\App\Http\Controllers\Api\UploadController::class, 'groupType'])->name('uploads.group-type');
 });

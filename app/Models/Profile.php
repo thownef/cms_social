@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasUploadable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Profile extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUploadable;
     protected $table = 'profiles';
 
     protected $fillable = [
@@ -41,5 +42,11 @@ class Profile extends Model
     {
         return $this->morphOne(Upload::class, 'uploadable')
             ->where('type', 'avatar');
+    }
+
+    protected function cover(): MorphOne
+    {
+        return $this->morphOne(Upload::class, 'uploadable')
+            ->where('type', 'cover');
     }
 }
