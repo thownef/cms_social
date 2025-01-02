@@ -4,7 +4,6 @@ namespace App\Actions\Upload;
 
 use App\Repositories\Traits\HasPerPageRequest;
 use App\Transformers\CollectionTransform;
-use App\Transformers\UploadTransformer;
 use Illuminate\Support\Facades\DB;
 
 class GroupTypeAction extends BaseAction
@@ -14,10 +13,8 @@ class GroupTypeAction extends BaseAction
     {
         return DB::transaction(function () {
             $uploads = $this->uploadRepository->getGroupType();
-            dd($uploads);
-            $collections = (new CollectionTransform())->transform($uploads);
 
-            return $this->httpOK($collections);
+            return $this->httpOK($uploads, CollectionTransform::class);
         });
     }
 }

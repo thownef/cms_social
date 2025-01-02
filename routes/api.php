@@ -25,6 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Post
     Route::apiResource('posts', \App\Http\Controllers\Api\PostController::class)->only(['index', 'store', 'update', 'destroy']);
     // Upload
-    Route::apiResource('uploads', \App\Http\Controllers\Api\UploadController::class)->only(['index']);
     Route::get('uploads/group-type', [\App\Http\Controllers\Api\UploadController::class, 'groupType'])->name('uploads.group-type');
+    Route::apiResource('uploads', \App\Http\Controllers\Api\UploadController::class)->only(['index']);
 });

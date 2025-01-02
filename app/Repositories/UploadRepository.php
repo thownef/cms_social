@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\TypeUploadEnum;
 use App\Models\Upload;
 use Illuminate\Support\Collection;
 
@@ -9,6 +10,7 @@ class UploadRepository extends EloquentRepository implements \App\Contracts\Repo
 {
     protected array $allowedFilters = [
         'uploadable_type',
+        'type',
     ];
 
     protected array $allowedSorts = [];
@@ -23,27 +25,25 @@ class UploadRepository extends EloquentRepository implements \App\Contracts\Repo
         return Upload::class;
     }
 
-    public function getGroupType(): Collection
+    public function getGroupType(): array
     {
-        $types = $this->queryBuilder()
-            ->collection()
-            ->distinct()
-            ->pluck('uploadable_type');
+        $uploads = $this->queryBuilder()->collection()->get();
 
-        $result = collect();
-        
-        foreach ($types as $type) {
-            $uploads = $this->queryBuilder()
-                ->where('uploadable_type', $type)
-                ->whereHasMorph('uploadable', '*', function ($query) {
-                    $query->where('user_id', auth()->id());
-                })
-                ->take(6)
-                ->get();
-                
-            $result->put($type, $uploads);
-        }
+        return [
+            'posts' => $uploads->filter(
+                fn($item) =>
+                $item->uploadable_type === 'App\Models\Post' && $item->type === TypeUploadEnum::Post
+            )->take(6)->values(),
 
-        return $result;
+            'avatars' => $uploads->filter(
+                fn($item) =>
+                $item->uploadable_type === 'App\Models\Profile' && $item->type === TypeUploadEnum::Avatar
+            )->take(6)->values(),
+
+            'covers' => $uploads->filter(
+                fn($item) =>
+                $item->uploadable_type === 'App\Models\Profile' && $item->type === TypeUploadEnum::Cover
+            )->take(6)->values()
+        ];
     }
 }

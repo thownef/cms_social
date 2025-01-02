@@ -12,7 +12,7 @@ class IndexAction extends BaseAction
     public function __invoke()
     {
         return DB::transaction(function () {
-            $uploads = $this->uploadRepository->queryBuilder()->collection()->paginate($this->getPerPage());
+            $uploads = $this->uploadRepository->queryBuilder()->collection()->paginate(6);
             return $this->httpOk($uploads, UploadTransformer::class);
         });
     }

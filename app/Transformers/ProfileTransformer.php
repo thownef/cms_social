@@ -42,8 +42,8 @@ class ProfileTransformer extends Transformer
             'biography' => $profile->biography,
             'created_at' => Carbon::parse($profile->created_at)->format('Y/m/d H:i:s'),
             'updated_at' => Carbon::parse($profile->updated_at)->format('Y/m/d H:i:s'),
-            'avatar' => (new UploadTransformer)->transform($profile->avatar),
-            'cover' => (new UploadTransformer)->transform($profile->cover),
+            'avatar' => $profile->avatar ? (new UploadTransformer)->transform($profile->avatar) : null,
+            'cover' => $profile->cover ? (new UploadTransformer)->transform($profile->cover) : null,
         ];
     }
 
