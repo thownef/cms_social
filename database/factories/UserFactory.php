@@ -25,7 +25,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'email' => "test@gmail.com",
+            'email' => fake()->unique()->email(),
             'phone' => fake()->unique()->phoneNumber(),
             'login_type' => LoginTypeEnum::NORMAL,
             'email_verified_at' => now(),

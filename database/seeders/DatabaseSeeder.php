@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\LoginTypeEnum;
 use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -15,8 +16,24 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::unsetEventDispatcher();
-        
-        User::factory(1)->create()->each(function ($user) {
+
+        User::create([
+            'email' => 'test@gmail.com',
+            'phone' => '0123456789',
+            'login_type' => LoginTypeEnum::NORMAL,
+            'email_verified_at' => now(),
+            'password' => Hash::make('123456789'),
+        ])->profile()->create([
+            'first_name' => 'Test',
+            'last_name' => 'User',
+            'gender' => 1,
+            'date_of_birth' => now(),
+            'location' => 'Test Location',
+            'biography' => 'Test Biography',
+            'is_active' => true
+        ]);
+
+        User::factory(10)->create()->each(function ($user) {
             $user->profile()->create([
                 'first_name' => fake()->firstName(),
                 'last_name' => fake()->lastName(),

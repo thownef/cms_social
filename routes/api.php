@@ -27,4 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Upload
     Route::get('uploads/group-type', [\App\Http\Controllers\Api\UploadController::class, 'groupType'])->name('uploads.group-type');
     Route::apiResource('uploads', \App\Http\Controllers\Api\UploadController::class)->only(['index']);
+
+    // Friend
+    Route::apiResource('friend-requests', \App\Http\Controllers\Api\FriendRequestController::class)->only(['index', 'store', 'update', 'destroy']);
 });
