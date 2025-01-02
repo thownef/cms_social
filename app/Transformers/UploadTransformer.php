@@ -32,6 +32,7 @@ class UploadTransformer extends Transformer
         return [
             'name' => $upload->name ?? null,
             'link' => $upload->link ?? null,
+            'type' => $upload->type ?? null,
         ];
     }
 }
