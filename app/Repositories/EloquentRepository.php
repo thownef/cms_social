@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Repositories\Traits\HasPerPageRequest;
+use App\Repositories\Traits\HasUpload;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Prettus\Repository\Exceptions\RepositoryException;
@@ -10,7 +11,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 abstract class EloquentRepository extends \Prettus\Repository\Eloquent\BaseRepository implements \App\Contracts\Repositories\EloquentRepositoryInterface
 {
-    use HasPerPageRequest;
+    use HasPerPageRequest, HasUpload;
 
     protected string $defaultSort = '-created_at';
 
