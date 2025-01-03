@@ -4,6 +4,7 @@ use App\Exceptions\ApiExceptionHandler;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (Throwable $exception, $request) {
             if ($request->is('api/*')) {
                 // Use the ApiExceptionHandler class to handle exceptions
-                return app(ApiExceptionHandler::class)->render($exception);
+                return app(ApiExceptionHandler::class)->render($request, $exception);
             }
 
             return parent::render($request, $exception);

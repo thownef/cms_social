@@ -2,85 +2,79 @@
 
 namespace App\Exceptions;
 
-use Exception;
+use Flugg\Responder\Exceptions\ConvertsExceptions;
+use Flugg\Responder\Exceptions\Http\HttpException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\Exceptions\MissingAbilityException;
+use Spatie\QueryBuilder\Exceptions\InvalidFilterQuery;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
-class ApiExceptionHandler extends Exception
+class ApiExceptionHandler extends ExceptionHandler
 {
-    /**
-     * Render the exception as an HTTP response.
-     */
-    public function render(Throwable $e): JsonResponse
-    {
-        $statusCode = JsonResponse::HTTP_BAD_REQUEST;
-        $message = $e->getMessage();
-        $errors = null;
+    use ConvertsExceptions, HandleErrorException;
 
+    protected $dontReport = [
+        TenantCouldNotBeIdentifiedException::class,
+    ];
+
+    public function render($request, Throwable $e)
+    {
         switch (true) {
             case $e instanceof HttpException:
-                $statusCode = $e->getStatusCode();
-                $message = $e->getMessage();
-                break;
+                return $this->renderApiServerErrorException($e);
             case $e instanceof ConflictHttpException:
-                $statusCode = JsonResponse::HTTP_CONFLICT;
-                $message = $e->getMessage();
-                break;
+                return $this->renderConflictResponse($e);
             case $e instanceof ValidationException:
-                $statusCode = JsonResponse::HTTP_UNPROCESSABLE_ENTITY;
-                $message = 'Validation failed';
-                $errors = $e->validator->errors();
-                break;
+                return $this->renderApiValidationResponse($e);
             case $e instanceof NotFoundHttpException:
-                $statusCode = JsonResponse::HTTP_NOT_FOUND;
-                $message = 'Resource not found';
-                break;
+                return $this->renderApiNotFoundResponse($e);
             case $e instanceof ModelNotFoundException:
-                $statusCode = JsonResponse::HTTP_NOT_FOUND;
-                $message = 'Model not found';
-                break;
+                return $this->renderApiModelNotFoundResponse($e);
+            case $e instanceof BadRequestHttpException:
+                return $this->renderApiBadRequestResponse($e);
             case $e instanceof MissingAbilityException:
             case $e instanceof AuthorizationException:
-                $statusCode = JsonResponse::HTTP_FORBIDDEN;
-                $message = 'Access denied';
-                break;
+                return $this->renderForbiddenException($e);
             case $e instanceof AuthenticationException:
-                $statusCode = JsonResponse::HTTP_UNAUTHORIZED;
-                $message = 'Unauthenticated';
-                break;
+                return $this->renderUnauthenticatedException($e);
+            case $e instanceof InvalidFilterQuery:
+                return $this->renderInvalidFilter($e);
             case $e instanceof AccessDeniedHttpException:
-                $statusCode = JsonResponse::HTTP_FORBIDDEN;
-                $message = 'Access denied';
-                break;
+                return $this->renderAccessDeniedException($e);
             default:
-                $statusCode = JsonResponse::HTTP_BAD_REQUEST;
-                $message = 'Bad Request';
-                break;
+                return $this->renderServerErrorException($e);
         }
-
-        return $this->makeJsonResponse(code: $statusCode, message: $message, errors: $errors);
     }
 
-    private function makeJsonResponse(int $code, string $message, $errors): JsonResponse
+    protected function renderApiModelNotFoundResponse(ModelNotFoundException $exception): JsonResponse
     {
-        $response = [
-            'status' => $code,
-            'message' => $message,
-        ];
+        return $this->processException($exception, Response::HTTP_NOT_FOUND, [
+            'code' => Response::HTTP_NOT_FOUND,
+        ]);
+    }
 
-        if (! empty($errors)) {
-            $response['errors'] = $errors;
-        }
+    private function renderInvalidFilter(InvalidFilterQuery $exception): JsonResponse
+    {
+        return $this->processException($exception, Response::HTTP_BAD_REQUEST, [
+            'code'    => Response::HTTP_BAD_REQUEST,
+            'message' => __('errors.filter_error'),
+        ]);
+    }
 
-        return response()->json($response, $code);
+    private function renderConflictResponse(ConflictHttpException $exception): JsonResponse
+    {
+        return $this->processException($exception, Response::HTTP_CONFLICT, [
+            'message' => $exception->getMessage(),
+        ]);
     }
 }
