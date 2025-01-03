@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\FriendRequest\DeleteAction;
 use App\Actions\FriendRequest\IndexAction;
 use App\Actions\FriendRequest\StoreAction;
+use App\Actions\FriendRequest\UpdateAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\FriendRequest\StoreRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\Api\FriendRequest\UpdateRequest;
+use App\Models\FriendRequest;
 
 class FriendRequestController extends Controller
 {
@@ -29,16 +32,16 @@ class FriendRequestController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequest $request, FriendRequest $friendRequest, UpdateAction $action)
     {
-        //
+        return $action($friendRequest->id, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(FriendRequest $friendRequest, DeleteAction $action)
     {
-        //
+        return $action($friendRequest->id);
     }
 }

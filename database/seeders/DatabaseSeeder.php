@@ -17,13 +17,15 @@ class DatabaseSeeder extends Seeder
     {
         User::unsetEventDispatcher();
 
-        User::create([
+        $user = User::create([
             'email' => 'test@gmail.com',
             'phone' => '0123456789',
             'login_type' => LoginTypeEnum::NORMAL,
             'email_verified_at' => now(),
             'password' => Hash::make('123456789'),
-        ])->profile()->create([
+        ]);
+
+        $user->profile()->create([
             'first_name' => 'Test',
             'last_name' => 'User',
             'gender' => 1,
@@ -32,6 +34,8 @@ class DatabaseSeeder extends Seeder
             'biography' => 'Test Biography',
             'is_active' => true
         ]);
+
+        $user->friendSettings()->create([]);
 
         User::factory(10)->create()->each(function ($user) {
             $user->profile()->create([
@@ -43,6 +47,8 @@ class DatabaseSeeder extends Seeder
                 'biography' => fake()->text(200),
                 'is_active' => true
             ]);
+
+            $user->friendSettings()->create([]);
         });
 
         Admin::create([

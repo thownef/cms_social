@@ -2,15 +2,12 @@
 
 namespace App\Actions\FriendRequest;
 
-use App\Repositories\Traits\HasPerPageRequest;
 use App\Transformers\FriendRequestTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class StoreAction extends BaseAction
 {
-    use HasPerPageRequest;
-
     /**
      * @throws \Prettus\Repository\Exceptions\RepositoryException
      *

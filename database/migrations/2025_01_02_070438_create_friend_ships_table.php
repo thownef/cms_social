@@ -34,7 +34,7 @@ return new class extends Migration
             $table->unique(['user_id', 'friend_id']);
         });
 
-        Schema::create('friends_settings', function (Blueprint $table) {
+        Schema::create('friend_settings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->boolean('show_friendship')->default(true);

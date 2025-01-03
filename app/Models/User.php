@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\RequestFriendEnum;
 use App\Models\Traits\HasCheckAccess;
 use App\Observers\UserObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -55,5 +57,31 @@ class User extends Authenticatable
     public function profile(): HasOne
     {
         return $this->hasOne(Profile::class);
+    }
+
+    public function sendRequests(): HasMany
+    {
+        return $this->hasMany(FriendRequest::class, 'user_id', 'id')
+            ->with('sender.profile')
+            ->where('status', RequestFriendEnum::PENDING)
+            ->whereNull('accepted_at');
+    }
+
+    public function receivedRequests(): HasMany
+    {
+        return $this->hasMany(FriendRequest::class, 'friend_id', 'id')
+            ->with('receiver.profile')
+            ->where('status', RequestFriendEnum::PENDING)
+            ->whereNull('accepted_at');
+    }
+
+    public function friends(): HasMany
+    {
+        return $this->hasMany(Friend::class, 'user_id', 'id');
+    }
+
+    public function friendSettings(): HasOne
+    {
+        return $this->hasOne(FriendSetting::class);
     }
 }

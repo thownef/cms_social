@@ -13,6 +13,7 @@ class UserObserver
     {
         $data = request()->only(['first_name', 'last_name', 'date_of_birth', 'gender', 'biography', 'location']);
         $user->profile()->create($data);
+        $user->friendSettings()->create([]);
     }
 
     /**
