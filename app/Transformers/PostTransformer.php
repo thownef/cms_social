@@ -41,7 +41,13 @@ class PostTransformer extends Transformer
             'file' => app(TransformBuilder::class)
                 ->resource($post->uploadable, new UploadTransformer())
                 ->transform()['data'] ?? [],
-            'created_by' => $post->user->profile,
+            'created_by' => [
+                'id' => $post->user->id,
+                'first_name' => $post->user->profile->first_name,
+                'last_name' => $post->user->profile->last_name,
+                'avatar' => (new UploadTransformer)->transform($post->user->profile->avatar),
+            ],
         ];
     }
 }
+
