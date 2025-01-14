@@ -26,6 +26,8 @@ class UpdateRequest extends FormRequest
             'files' => 'sometimes|array',
             'files.*' => 'image|mimes:jpg,jpeg,png,gif|max:10240',
             'is_public' => 'sometimes|boolean',
+            'file_ids' => 'sometimes|array',
+            'file_ids.*' => 'exists:uploads,id'
         ];
     }
 }

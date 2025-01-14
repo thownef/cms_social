@@ -38,7 +38,7 @@ class PostTransformer extends Transformer
             'is_public' => $post->is_public,
             'created_at' => Carbon::parse($post->created_at)->format('Y/m/d H:i:s'),
             'updated_at' => Carbon::parse($post->updated_at)->format('Y/m/d H:i:s'),
-            'file' => app(TransformBuilder::class)
+            'files' => app(TransformBuilder::class)
                 ->resource($post->uploadable, new UploadTransformer())
                 ->transform()['data'] ?? [],
             'created_by' => [

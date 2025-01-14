@@ -27,12 +27,6 @@ trait HasUpload
             return;
         }
 
-        if ($model->uploadable()->exists()) {
-            $model->uploadable->each(function ($upload) {
-                $upload->delete();
-            });
-        }
-
         foreach ($files as $file) {
             $fileName = date('YmdHis') . '_' . $file->getClientOriginalName();
             $link = S3Service::putFile($fileName, $file->getContent(), $model->uploadFolder ?? '');

@@ -21,8 +21,20 @@ class UpdateAction extends BaseAction
             /**
              * @var Post $post
              */
-            $files = data_get($data, 'files', []);
+            $post = $this->postRepository->find($id);
+            
+            $file_ids = data_get($data, 'file_ids', []);
+            if (!empty($file_ids)) {
+                $post->uploadable()
+                    ->whereIn('id', $file_ids)
+                    ->get()
+                    ->each(function ($upload) {
+                        $upload->delete();
+                    });
+            }
+
             $post = $this->postRepository->update($data, $id);
+            $files = data_get($data, 'files', []);
             if (!empty($files)) {
                 $this->executeUpload($post, $files);
             }
