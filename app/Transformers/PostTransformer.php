@@ -45,9 +45,10 @@ class PostTransformer extends Transformer
                 'id' => $post->user->id,
                 'first_name' => $post->user->profile->first_name,
                 'last_name' => $post->user->profile->last_name,
-                'avatar' => (new UploadTransformer)->transform($post->user->profile->avatar),
+                'avatar' => $post->user->profile->avatar
+                    ? (new UploadTransformer)->transform($post->user->profile->avatar)
+                    : null,
             ],
         ];
     }
 }
-

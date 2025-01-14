@@ -22,7 +22,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'sometimes|string|max:255',
+            'content' => 'string|nullable',
             'files' => 'sometimes|array',
             'files.*' => 'image|mimes:jpg,jpeg,png,gif|max:10240',
             'is_public' => 'sometimes|boolean',

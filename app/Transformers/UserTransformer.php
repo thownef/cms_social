@@ -20,7 +20,7 @@ class UserTransformer extends Transformer
      *
      * @var array
      */
-    protected $load = [];
+    protected $load = ['profile'];
 
     /**
      * Transform the model.

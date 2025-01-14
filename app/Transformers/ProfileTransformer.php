@@ -31,7 +31,6 @@ class ProfileTransformer extends Transformer
      */
     public function transform(Profile $profile)
     {
-        // dd($profile->avatar);
         return [
             'id' => $profile->id,
             'first_name' => $profile->first_name,
