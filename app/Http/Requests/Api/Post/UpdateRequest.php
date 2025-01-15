@@ -22,11 +22,11 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'sometimes|string|max:255',
-            'files' => 'sometimes|array',
+            'content' => 'nullable|string|max:255',
+            'files' => 'nullable|array',
             'files.*' => 'image|mimes:jpg,jpeg,png,gif|max:10240',
-            'is_public' => 'sometimes|boolean',
-            'file_ids' => 'sometimes|array',
+            'is_public' => 'nullable|boolean',
+            'file_ids' => 'nullable|array',
             'file_ids.*' => 'exists:uploads,id'
         ];
     }

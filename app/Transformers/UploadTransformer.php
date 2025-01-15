@@ -30,6 +30,7 @@ class UploadTransformer extends Transformer
     public function transform(Upload $upload)
     {
         return [
+            'id' => $upload->id,
             'name' => $upload->name ?? null,
             'link' => $upload->link ?? null,
             'type' => $upload->type ?? null,
