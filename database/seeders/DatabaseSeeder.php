@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\LoginTypeEnum;
 use App\Models\Admin;
+use App\Models\Conversation;
 use App\Models\Group;
 use App\Models\Message;
 use App\Models\User;
@@ -92,6 +93,8 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now()
             ];
         })->values();
+
+        Conversation::insertOrIgnore($conversations->toArray());
 
         Admin::create([
             'name' => 'Admin',

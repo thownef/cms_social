@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('sender_id')->constrained('users');
             $table->string('receiver_id')->nullable()->constrained('users');
             $table->string('group_id')->nullable()->constrained('groups');
-            $table->string('conversation_id')->constrained('conversations');
+            $table->string('conversation_id')->nullable()->constrained('conversations');
             $table->timestamps();
         });
 
