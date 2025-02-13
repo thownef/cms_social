@@ -1,10 +1,19 @@
 <?php
 
+use App\Events\NewMessage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login'])->name('login');
     Route::post('register', [\App\Http\Controllers\Api\AuthController::class, 'register'])->name('register');
+});
+
+Route::post('/messages', function (Request $request) {
+    $message = $request->input('message');
+    event(new NewMessage($message));
+    
+    return response()->json(['status' => 'Message sent']);
 });
 
 Route::apiResource('profiles', \App\Http\Controllers\Api\ProfileController::class)->only(['show']);
