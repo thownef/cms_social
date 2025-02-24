@@ -101,14 +101,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\\$name;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 
 class {$name}Controller extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index()
     {
         //
     }
@@ -116,7 +115,7 @@ class {$name}Controller extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request \$request): JsonResponse
+    public function store(Request \$request)
     {
         //
     }
@@ -124,7 +123,7 @@ class {$name}Controller extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($name \$model): JsonResponse
+    public function show($name \$model)
     {
         //
     }
@@ -132,7 +131,7 @@ class {$name}Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request \$request, $name \$model): JsonResponse
+    public function update(Request \$request, $name \$model)
     {
         //
     }
@@ -140,7 +139,7 @@ class {$name}Controller extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($name \$model): JsonResponse
+    public function destroy($name \$model)
     {
         //
     }
