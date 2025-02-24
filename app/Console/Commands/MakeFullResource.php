@@ -144,6 +144,7 @@ class {$name}Controller extends Controller
         //
     }
 }
+
 PHP;
 
     File::put(app_path("Http/Controllers/Api/{$name}Controller.php"), $template);
