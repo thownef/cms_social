@@ -86,6 +86,7 @@ class $name extends Model
         'updated_at' => 'datetime',
     ];
 }
+
 PHP;
 
     File::put(app_path("Models/{$name}.php"), $template);
@@ -158,6 +159,7 @@ PHP;
 namespace App\Contracts\Repositories;
 
 interface {$name}RepositoryInterface extends EloquentRepositoryInterface {}
+
 PHP;
 
     File::put(app_path("Contracts/Repositories/{$name}RepositoryInterface.php"), $template);
@@ -188,6 +190,7 @@ class {$name}Repository extends EloquentRepository implements \App\Contracts\Rep
         return {$name}::class;
     }
 }
+
 PHP;
 
     File::put(app_path("Repositories/{$name}Repository.php"), $template);
