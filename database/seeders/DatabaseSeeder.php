@@ -81,6 +81,18 @@ class DatabaseSeeder extends Seeder
         }
 
         Message::factory(100)->create();
+
+        $groupMessages = Message::whereNotNull('group_id')
+            ->orderBy('created_at')
+            ->get()
+            ->groupBy('group_id');
+
+        foreach ($groupMessages as $groupId => $messages) {
+            Group::where('id', $groupId)->update([
+                'last_message_id' => $messages->last()->id
+            ]);
+        }
+
         $messages = Message::whereNull('group_id')->orderBy('created_at')->get();
         $conversations = $messages->groupBy(function ($message) {
             return collect([$message->sender_id, $message->receiver_id])->sort()->implode('-');
