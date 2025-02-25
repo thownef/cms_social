@@ -68,3 +68,7 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 ## Make Full Resource
 
 php artisan make:resource-api [name]
+
+## Make Transformer
+
+php artisan make:transformer [name]
