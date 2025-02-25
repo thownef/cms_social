@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->longText('message')->nullable();
-            $table->string('sender_id')->constrained('users');
-            $table->string('receiver_id')->nullable()->constrained('users');
-            $table->string('group_id')->nullable()->constrained('groups');
-            $table->string('conversation_id')->nullable()->constrained('conversations');
+            $table->foreignId('sender_id')->constrained('users');
+            $table->foreignId('receiver_id')->nullable()->constrained('users');
+            $table->foreignId('group_id')->nullable()->constrained('groups');
+            $table->foreignId('conversation_id')->nullable()->constrained('conversations');
             $table->timestamps();
         });
 
