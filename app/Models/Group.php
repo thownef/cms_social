@@ -17,10 +17,9 @@ class Group extends Model
         'owner_id',
         'name',
         'description',
-        'last_message_id'
     ];
 
-    public function users(): BelongsToMany
+    public function groupUsers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'group_users');
     }

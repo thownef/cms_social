@@ -9,8 +9,8 @@ class Conversation extends Model
 {
     protected $table = 'conversations';
     protected $fillable = [
-        'user_id1',
-        'user_id2',
+        'group_id',
+        'is_group',
         'last_message_id'
     ];
 
@@ -19,13 +19,13 @@ class Conversation extends Model
         return $this->belongsTo(Message::class, 'last_message_id');
     }
 
-    public function users1()
+    public function participants()
     {
-        return $this->belongsTo(User::class, 'user_id1');
+        return $this->belongsToMany(User::class, 'participants');
     }
 
-    public function users2()
+    public function group()
     {
-        return $this->belongsTo(User::class, 'user_id2');
+        return $this->belongsTo(Group::class);
     }
 }

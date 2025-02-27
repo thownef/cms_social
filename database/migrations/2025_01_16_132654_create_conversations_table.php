@@ -13,17 +13,24 @@ return new class extends Migration
     {
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id1')->constrained('users');
-            $table->foreignId('user_id2')->constrained('users');
+            $table->foreignId('group_id')->nullable()->constrained('groups');
+            $table->foreignId('is_group')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::create('participants', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('conversation_id')->constrained('conversations');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
         Schema::dropIfExists('conversations');
+        Schema::dropIfExists('participants');
     }
 };

@@ -2,6 +2,6 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('online', function () {
-    return true;
-}, ['guards' => ['sanctum']]);
+Broadcast::channel('online', function ($user) {
+    return $user->profile;
+}, ['guards' => ['api']]);

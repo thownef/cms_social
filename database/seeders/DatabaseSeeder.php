@@ -80,33 +80,78 @@ class DatabaseSeeder extends Seeder
             $group->users()->attach(array_unique([1, ...$users]));
         }
 
-        Message::factory(100)->create();
 
-        $groupMessages = Message::whereNotNull('group_id')
-            ->orderBy('created_at')
-            ->get()
-            ->groupBy('group_id');
+        $users = User::all();
+        foreach ($users as $user) {
+            $otherUsers = $users->where('id', '!=', $user->id)->random(min(3, $users->count() - 1));
 
-        foreach ($groupMessages as $groupId => $messages) {
-            Group::where('id', $groupId)->update([
-                'last_message_id' => $messages->last()->id
-            ]);
+            foreach ($otherUsers as $otherUser) {
+                $userIds = [$user->id, $otherUser->id];
+                sort($userIds);
+                $conversationExists = Conversation::whereHas('users', function ($query) use ($userIds) {
+                    $query->whereIn('user_id', $userIds);
+                }, '=', count($userIds))->where('is_group', 0)->exists();
+
+                if (!$conversationExists) {
+                    $conversation = Conversation::create([
+                        'is_group' => 0,
+                        'group_id' => null
+                    ]);
+
+                    $conversation->users()->attach($userIds, ['created_at' => now(), 'updated_at' => now()]);
+
+                    $messageCount = rand(5, 15);
+                    for ($i = 0; $i < $messageCount; $i++) {
+                        $senderId = rand(0, 1) ? $user->id : $otherUser->id;
+
+                        Message::create([
+                            'conversation_id' => $conversation->id,
+                            'user_id' => $senderId,
+                            'message' => fake()->realText(rand(20, 150)),
+                            'created_at' => fake()->dateTimeBetween('-1 month', 'now'),
+                        ]);
+                    }
+
+                    $lastMessage = Message::where('conversation_id', $conversation->id)
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+
+                    if ($lastMessage) {
+                        $conversation->update(['last_message_id' => $lastMessage->id]);
+                    }
+                }
+            }
         }
 
-        $messages = Message::whereNull('group_id')->orderBy('created_at')->get();
-        $conversations = $messages->groupBy(function ($message) {
-            return collect([$message->sender_id, $message->receiver_id])->sort()->implode('-');
-        })->map(function ($groupedMessages) {
-            return [
-                'user_id1' => $groupedMessages->first()->sender_id,
-                'user_id2' => $groupedMessages->first()->receiver_id,
-                'last_message_id' => $groupedMessages->last()->id,
-                'created_at' => now(),
-                'updated_at' => now()
-            ];
-        })->values();
+        for ($i = 0; $i < 5; $i++) {
+            $conversation = Conversation::create([
+                'is_group' => 1,
+                'group_id' => Group::inRandomOrder()->first()->id
+            ]);
 
-        Conversation::insertOrIgnore($conversations->toArray());
+            $groupUsers = $users->random(rand(3, min(6, $users->count())));
+            $conversation->users()->attach($groupUsers->pluck('id')->toArray());
+
+            $messageCount = rand(10, 20);
+            for ($j = 0; $j < $messageCount; $j++) {
+                $sender = $groupUsers->random();
+
+                Message::create([
+                    'conversation_id' => $conversation->id,
+                    'user_id' => $sender->id,
+                    'message' => fake()->realText(rand(20, 150)),
+                    'created_at' => fake()->dateTimeBetween('-1 month', 'now'),
+                ]);
+            }
+
+            $lastMessage = Message::where('conversation_id', $conversation->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            if ($lastMessage) {
+                $conversation->update(['last_message_id' => $lastMessage->id]);
+            }
+        }
 
         Admin::create([
             'name' => 'Admin',
