@@ -41,7 +41,7 @@ class RegisterRequest extends FormRequest
             'login_type' => ['required', 'integer', Rule::in(LoginTypeEnum::getTypes())],
             'first_name' => ['required', 'string'],
             'last_name' => ['required', 'string'],
-            'phone' => ['required', 'string', Rule::unique('users')->whereNull('deleted_at')->where('phone', $this->phone)],
+            'phone' => ['sometimes', 'string', Rule::unique('users')->whereNull('deleted_at')->where('phone', $this->phone)],
             'date_of_birth' => ['required', 'date'],
             'gender' => ['required', 'numeric'],
             'email' => [
