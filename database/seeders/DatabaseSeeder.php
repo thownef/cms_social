@@ -77,7 +77,7 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             $group = Group::factory()->create(['owner_id' => 1]);
             $users = User::inRandomOrder()->limit(rand(2, 10))->pluck('id');
-            $group->users()->attach(array_unique([1, ...$users]));
+            $group->groupUsers()->attach(array_unique([1, ...$users]), ['created_at' => now(), 'updated_at' => now()]);
         }
 
 
@@ -88,7 +88,7 @@ class DatabaseSeeder extends Seeder
             foreach ($otherUsers as $otherUser) {
                 $userIds = [$user->id, $otherUser->id];
                 sort($userIds);
-                $conversationExists = Conversation::whereHas('users', function ($query) use ($userIds) {
+                $conversationExists = Conversation::whereHas('participants', function ($query) use ($userIds) {
                     $query->whereIn('user_id', $userIds);
                 }, '=', count($userIds))->where('is_group', 0)->exists();
 
@@ -98,7 +98,7 @@ class DatabaseSeeder extends Seeder
                         'group_id' => null
                     ]);
 
-                    $conversation->users()->attach($userIds, ['created_at' => now(), 'updated_at' => now()]);
+                    $conversation->participants()->attach($userIds, ['created_at' => now(), 'updated_at' => now()]);
 
                     $messageCount = rand(5, 15);
                     for ($i = 0; $i < $messageCount; $i++) {
@@ -130,7 +130,7 @@ class DatabaseSeeder extends Seeder
             ]);
 
             $groupUsers = $users->random(rand(3, min(6, $users->count())));
-            $conversation->users()->attach($groupUsers->pluck('id')->toArray());
+            $conversation->participants()->attach($groupUsers->pluck('id')->toArray(), ['created_at' => now(), 'updated_at' => now()]);
 
             $messageCount = rand(10, 20);
             for ($j = 0; $j < $messageCount; $j++) {
