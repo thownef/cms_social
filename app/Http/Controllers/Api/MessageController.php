@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Actions\Conversation\IndexAction;
-use App\Actions\Conversation\ShowAction;
+use App\Actions\Message\IndexAction;
 use App\Http\Controllers\Controller;
-use App\Models\Conversation;
+use App\Models\Message;
 use Illuminate\Http\Request;
 
-class ConversationController extends Controller
+class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,15 +28,15 @@ class ConversationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Conversation $conversation, ShowAction $action)
+    public function show(Message $model)
     {
-        return $action($conversation);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Conversation $model)
+    public function update(Request $request, Message $model)
     {
         //
     }
@@ -45,7 +44,7 @@ class ConversationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Conversation $model)
+    public function destroy(Message $model)
     {
         //
     }

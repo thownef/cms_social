@@ -34,4 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Conversation
     Route::apiResource('conversations', \App\Http\Controllers\Api\ConversationController::class);
+
+    // Message
+    Route::apiResource('messages', \App\Http\Controllers\Api\MessageController::class);
 });

@@ -28,4 +28,9 @@ class Conversation extends Model
     {
         return $this->belongsTo(Group::class);
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }

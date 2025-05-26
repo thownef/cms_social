@@ -5,7 +5,7 @@ namespace App\Transformers;
 use App\Models\Message;
 use Flugg\Responder\Transformers\Transformer;
 
-class MessageTransformer extends Transformer
+class MessagesTransformer extends Transformer
 {
     /**
      * List of available relations.
@@ -30,10 +30,13 @@ class MessageTransformer extends Transformer
     public function transform(Message $message)
     {
         return [
-            'id' => (int) $message->id,
+            'id' => $message->id,
+            'user_id' => $message->user_id,
+            'conversation_id' => $message->conversation_id,
             'message' => $message->message,
             'name' => $message->user->profile->first_name . ' ' . $message->user->profile->last_name,
             'avatar' => $message->user->profile->avatar,
+            'created_at' => $message->created_at,
             'updated_at' => $message->updated_at,
         ];
     }
