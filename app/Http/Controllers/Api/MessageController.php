@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Message\IndexAction;
+use App\Actions\Message\StoreAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\Message\StoreRequest;
 use App\Models\Message;
 use Illuminate\Http\Request;
 
@@ -20,9 +22,9 @@ class MessageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request, StoreAction $action)
     {
-        //
+        return $action($request->validated());
     }
 
     /**

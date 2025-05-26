@@ -7,5 +7,6 @@ Broadcast::channel('online', function ($user) {
 }, ['guards' => ['api']]);
 
 Broadcast::channel('conversation.{conversationId}', function ($user, $conversationId) {
-    return $user->id === $conversationId;
+    $conversation = \App\Models\Conversation::find($conversationId);
+    return $conversation;
 }, ['guards' => ['api']]);
