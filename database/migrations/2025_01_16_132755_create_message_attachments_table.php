@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('message_attachments', function (Blueprint $table) {
             $table->id();
-            $table->string('message_id')->constrained('messages');
+            $table->foreignId('message_id')->constrained('messages');
             $table->timestamps();
         });
     }

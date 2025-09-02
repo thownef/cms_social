@@ -31,4 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Friend
     Route::apiResource('friends', \App\Http\Controllers\Api\FriendController::class);
     Route::apiResource('friend-requests', \App\Http\Controllers\Api\FriendRequestController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // Conversation
+    Route::apiResource('conversations', \App\Http\Controllers\Api\ConversationController::class);
+
+    // Message
+    Route::apiResource('messages', \App\Http\Controllers\Api\MessageController::class);
 });
