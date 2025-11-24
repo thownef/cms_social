@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Actions\Friend\IndexAction;
 use App\Actions\Friend\ShowAction;
+use App\Actions\Friend\SuggestAction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -39,5 +40,10 @@ class FriendController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function suggestions(SuggestAction $action)
+    {
+        return $action();
     }
 }

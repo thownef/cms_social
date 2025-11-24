@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('uploads', \App\Http\Controllers\Api\UploadController::class)->only(['index']);
 
     // Friend
+    Route::get('friends/suggestions', [\App\Http\Controllers\Api\FriendController::class, 'suggestions'])->name('friends.suggestions');
     Route::apiResource('friends', \App\Http\Controllers\Api\FriendController::class);
     Route::apiResource('friend-requests', \App\Http\Controllers\Api\FriendRequestController::class)->only(['index', 'store', 'update', 'destroy']);
 
