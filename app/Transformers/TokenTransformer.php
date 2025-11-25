@@ -33,7 +33,7 @@ class TokenTransformer extends Transformer
     {
         return [
             'access_token' => $token->plainTextToken,
-            'user'         => app(TransformBuilder::class)
+            'user' => app(TransformBuilder::class)
                 ->resource($token->accessToken->tokenable, new UserTransformer())
                 ->with('profile')
                 ->transform()['data'] ?? [],

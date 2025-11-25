@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\Services\AuthenticationServiceInterface;
+use App\Models\User;
 use App\Supports\Traits\HasTransformer;
 use App\Transformers\TokenTransformer;
 use App\Transformers\UserTransformer;
@@ -22,13 +23,12 @@ class AuthenticationService implements AuthenticationServiceInterface
 
     private function setModel()
     {
-        $this->_model = app()->make(\App\Models\User::class);
+        $this->_model = app()->make(User::class);
     }
 
     public function attempt($credentials): JsonResponse
     {
         $account = $this->_model->where('email', '=', data_get($credentials, 'email', ''))->first();
-
         $isCorrectPass = $account?->checkCorrectPass(data_get($credentials, 'password'));
 
         if ($isCorrectPass) {
@@ -38,17 +38,13 @@ class AuthenticationService implements AuthenticationServiceInterface
         throw new AuthenticationException;
     }
 
-    /**
-     * @param  $request
-     */
-    public function register($requestData): Model
+    public function register($requestData): JsonResponse
     {
-        return $this->_model->create($requestData);
+        $data = collect($requestData)->only(['login_type', 'first_name', 'last_name', 'email', 'password', 'phone'])->toArray();
+        $account = $this->_model->create($data);
+        return $this->httpOK($account, UserTransformer::class);
     }
 
-    /**
-     * @param  $request
-     */
     public function login($credentials): JsonResponse
     {
         return $this->attempt($credentials);
@@ -70,5 +66,16 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function me(): JsonResponse
     {
         return $this->httpOK(auth()->user(), UserTransformer::class);
+    }
+
+    public function refresh(): JsonResponse
+    {
+        $user = auth()->user();
+
+        $user->currentAccessToken()->delete();
+
+        $token = $user->createToken($user)->plainTextToken;
+
+        return $this->httpOK($token, TokenTransformer::class);
     }
 }
